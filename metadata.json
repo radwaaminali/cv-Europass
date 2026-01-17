@@ -1,0 +1,7 @@
+{
+  "name": "Europass AI CV Builder",
+  "description": "A professional tool to transform existing resumes or raw text into a standard Europass format using Gemini AI extraction and real-time editing.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
