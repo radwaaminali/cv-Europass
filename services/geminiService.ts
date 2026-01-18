@@ -10,6 +10,7 @@ const cvSchema = {
       properties: {
         firstName: { type: Type.STRING },
         lastName: { type: Type.STRING },
+        jobTitle: { type: Type.STRING },
         email: { type: Type.STRING },
         phone: { type: Type.STRING },
         address: { type: Type.STRING },
@@ -107,7 +108,7 @@ const cvSchema = {
 };
 
 export const extractCVData = async (content: string, mimeType?: string): Promise<CVData> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   let promptParts: any[] = [];
   
@@ -116,13 +117,13 @@ export const extractCVData = async (content: string, mimeType?: string): Promise
       {
         inlineData: {
           mimeType: mimeType,
-          data: content // base64 string
+          data: content
         }
       },
-      { text: "Extract all professional and personal details from this document into the structured Europass CV format. Ensure job descriptions are extracted as clear bullet points if they exist in the text. Categorize certifications and achievements separately." }
+      { text: "Extract all professional and personal details from this document into the structured Europass CV format. Ensure job descriptions are extracted as clear bullet points. Specifically, look for their current desired job title or primary profession and put it in the personalInfo.jobTitle field." }
     ];
   } else {
-    promptParts = [{ text: `Extract the following resume text into a structured JSON Europass format:\n\n${content}` }];
+    promptParts = [{ text: `Extract the following resume text into a structured JSON Europass format. Identify the person's current or target job title and include it in personalInfo.jobTitle:\n\n${content}` }];
   }
 
   const response = await ai.models.generateContent({
